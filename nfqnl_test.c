@@ -55,15 +55,7 @@ static int cb(struct nfq_q_handle *qh, struct nfgenmsg *nfmsg, struct nfq_data *
 	uint32_t sourceIP = be32toh(ipHeader->saddr);
 	uint32_t destIP = be32toh(ipHeader->daddr);
 	//printf("IP = %04x\n", ip);
-
-	/*if(PyCallable_Check(pFunc)){
-		pValue = PyObject_CallObject(pFunc, NULL);
-	} else {
-		PyErr_Print();
-	}*/
-	//printf("%d\n", PyObject_IsTrue(pValue));
 	
-
 	if(ipHeader->protocol == IPPROTO_TCP){
 		struct tcphdr *tcpHeader = (struct tcphdr *)(payloadData + (ipHeader->ihl<<2));
 		unsigned int sourcePort = ntohs(tcpHeader->source);
