@@ -28,10 +28,13 @@ def verify(sourceIP, destIP, sourcePort, destPort, proto):
     dstportBytes = struct.pack(">I", destPort)
     prtBytes = proto.encode("utf8")
     
-    m.update(srcipBytes + dstipBytes + srcportBytes + dstportBytes + prtBytes)  # + destIP + sourcePort + destPort + proto)
+    m.update(srcipBytes + dstipBytes + srcportBytes + dstportBytes + prtBytes)
     print(srcipBytes + dstipBytes + srcportBytes + dstportBytes + prtBytes)
+
+    # m.update(srcipBytes + dstipBytes + dstportBytes + prtBytes)
+    # print(srcipBytes + dstipBytes + dstportBytes + prtBytes)
     
-    h = m.hexdigest()
+    h = '0x' + m.hexdigest()
     print(h)
 
     with open('contract.abi', 'r') as abi_definition:

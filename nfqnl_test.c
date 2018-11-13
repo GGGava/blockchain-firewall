@@ -69,9 +69,15 @@ static int cb(struct nfq_q_handle *qh, struct nfgenmsg *nfmsg, struct nfq_data *
 		}
 
 		Py_DECREF(argList);
-		printf("Accept from:%04x to:%04x From port %u to port %u\n", sourceIP, destIP, sourcePort, destPort);	
 
-		return nfq_set_verdict(qh, id, NF_ACCEPT, 0, NULL);
+		if(PyObject_IsTrue(pValue) == 1){
+
+			printf("Accept from:%04x to:%04x From port %u to port %u\n", sourceIP, destIP, sourcePort, destPort);	
+			return nfq_set_verdict(qh, id, NF_ACCEPT, 0, NULL);
+		} else {
+			printf("Drop from:%04x to:%04x From port %u to port %u\n", sourceIP, destIP, sourcePort, destPort);	
+			return nfq_set_verdict(qh, id, NF_DROP, 0, NULL);
+		} 
 	} else if (ipHeader->protocol == IPPROTO_UDP){
 		struct udphdr *udpHeader = (struct udphdr *)(payloadData + (ipHeader->ihl<<2));
 		unsigned int sourcePort = ntohs(udpHeader->source);
@@ -85,10 +91,16 @@ static int cb(struct nfq_q_handle *qh, struct nfgenmsg *nfmsg, struct nfq_data *
 		}
 		Py_DECREF(argList);
 
-		printf("Accept from:%04x to:%04x From port %04x to port %04x\n", sourceIP, destIP, sourcePort, destPort);
+		if(PyObject_IsTrue(pValue) == 1){
 
-		return nfq_set_verdict(qh, id, NF_ACCEPT, 0, NULL);
+			printf("Accept from:%04x to:%04x From port %u to port %u\n", sourceIP, destIP, sourcePort, destPort);	
+			return nfq_set_verdict(qh, id, NF_ACCEPT, 0, NULL);
+		} else {
+			printf("Drop from:%04x to:%04x From port %u to port %u\n", sourceIP, destIP, sourcePort, destPort);	
+			return nfq_set_verdict(qh, id, NF_DROP, 0, NULL);
+		} 
 	} else {
+		printf("Packet accepted: Protocol not supported.");
 		return nfq_set_verdict(qh, id, NF_ACCEPT, 0, NULL);
 	}
 	//tcpHeader = (struct tcphdr *)(payloadData + (ipHeader->ihl<<2));
